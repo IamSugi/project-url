@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
+const urlArr = [];
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -11,7 +12,7 @@ app.use(cors());
 
 app.use("/public", express.static(`${process.cwd()}/public`));
 
-app.use(bodyParser.urlencoded({ exteded: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const isValidUrl = (urlString) => {
@@ -38,14 +39,25 @@ app.get("/api/hello", function (req, res) {
 app.post("/api/shorturl", function (req, res) {
   const originalUrl = req.body.url;
   if (isValidUrl(originalUrl)) {
+    urlArr.push(originalUrl);
     res.status(200).json({
-      valid: true,
-      link: originalUrl,
+      original_url: originalUrl,
+      short_url: urlArr.length,
     });
   } else {
     res.status(400).json({
       error: "invalid url",
     });
+  }
+});
+
+app.get("/api/shorturl/:short_url", function (req, res) {
+  const short_url = req.params.short_url - 1;
+  const original_url = urlArr[short_url];
+  if (short_url == undefined || original_url < short_url) {
+    res.status(400).json({ respond: "Bad Request" });
+  } else {
+    res.redirect(original_url);
   }
 });
 
