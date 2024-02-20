@@ -15,18 +15,19 @@ app.use("/public", express.static(`${process.cwd()}/public`));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const isValidUrl = (urlString) => {
-  var urlPattern = new RegExp(
-    "^(https?:\\/\\/)?" + //validate protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + //validate domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip(v4)
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + //validate port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + //validate query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); //validate fragment locator
-  return !!urlPattern.test(urlString);
-};
+// const isValidUrl = (urlString) => {
+//   var urlPattern = new RegExp(
+//     "^(https?:\\/\\/)?" + //validate protocol
+//       "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + //validate domain name
+//       "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip(v4)
+//       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + //validate port and path
+//       "(\\?[;&a-z\\d%_.~+=-]*)?" + //validate query string
+//       "(\\#[-a-z\\d_]*)?$",
+//     "i"
+//   ); //validate fragment locator
+//   return !!urlPattern.test(urlString);
+// };
+
 app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
@@ -37,8 +38,9 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.post("/api/shorturl", function (req, res) {
+  const emailValid = true;
   const originalUrl = req.body.url;
-  if (isValidUrl(originalUrl)) {
+  if (emailValid) {
     urlArr.push(originalUrl);
     res.status(200).json({
       original_url: originalUrl,
